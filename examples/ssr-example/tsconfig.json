@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["es6", "dom"],
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "paths": {
+      "react-rsrouter": ["../../../packages/react-rsrouter/"]
+    },
+    "rootDir": "src",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "outDir": "./esm/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "es2015",
+    "target": "ESNext",
+    "jsx": "react"
+  },
+  "include": ["./src/**/*"]
+}

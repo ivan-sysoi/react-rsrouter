@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "outDir": "./esm/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "es2015",
+    "target": "ESNext",
+    "jsx": "react",
+    "declaration": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}

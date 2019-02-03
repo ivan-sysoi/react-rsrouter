@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Link should render url 1`] = `
+<a
+  href="/some/path"
+  onClick={[Function]}
+>
+  Simple Link
+</a>
+`;

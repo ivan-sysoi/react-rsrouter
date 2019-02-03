@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "outDir": "./esm/",
+    "noImplicitAny": true,
+    "module": "commonJS",
+    "target": "ES2015"
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
+
