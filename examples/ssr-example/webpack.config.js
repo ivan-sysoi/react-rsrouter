@@ -27,6 +27,7 @@ const resolve = {
     redux: path.resolve(__dirname, 'node_modules/redux'),
     'react-redux': path.resolve(__dirname, 'node_modules/react-redux'),
     'react-saga': path.resolve(__dirname, 'node_modules/react-saga'),
+    'react-hot-loader': path.resolve(__dirname, 'node_modules/react-hot-loader'),
   },
 }
 
