@@ -176,6 +176,10 @@ export class RoutesCollection {
         }
         return { path: [this.fallbackId], params: {} };
     }
+    isFallbackMatch(path) {
+        const routes = Array.from(this.getRoutes(path));
+        return routes[routes.length - 1].type === 'fallback';
+    }
     getRoutePath(routeId) {
         let parent = this.parent;
         const path = [routeId];

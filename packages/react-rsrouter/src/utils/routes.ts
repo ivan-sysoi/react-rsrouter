@@ -38,6 +38,7 @@ export interface IRoutesCollection {
   traverse(location: RouterLocation, context: MatcherContext): Match | null
   getMatch(location: RouterLocation, getState: stateGetter): Match
   getFallbackMatch(path?: RoutePath): Match
+  isFallbackMatch(path: RoutePath): boolean
   buildUrl(path: RoutePath, params: RouteParams, getState: stateGetter): string
 }
 
@@ -235,6 +236,11 @@ export class RoutesCollection implements IRoutesCollection {
       throw new Error('You must speciy at least one fallback route')
     }
     return { path: [this.fallbackId], params: {} }
+  }
+
+  isFallbackMatch(path: RoutePath): boolean {
+    const routes = Array.from(this.getRoutes(path))
+    return routes[routes.length - 1].type === 'fallback'
   }
 
   getRoutePath(routeId: string): RoutePath {
