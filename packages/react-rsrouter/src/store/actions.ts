@@ -10,8 +10,8 @@ export const setMatch = createStandardAction<string>('@rs_router/SET_MATCH').map
 
 export const notFound = createAction('@rs_router/NOT_FOUND')
 
-type redicrectPayload = { location: string; replace: boolean }
-export const redirect = createStandardAction<string>('@rs_router/REDIRECT').map((payload: redicrectPayload) => ({
+type redirectPayload = { location: string; replace: boolean }
+export const redirect = createStandardAction<string>('@rs_router/REDIRECT').map((payload: redirectPayload) => ({
   payload,
 }))
 

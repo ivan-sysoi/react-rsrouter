@@ -75,7 +75,7 @@ app.use((req, res, next) => {
     const state: RootState = store.getState()
     const { status, location } = selectServerResponse(state)
 
-    if (status in [301, 302] && location) {
+    if ((status === 301 || status === 302)  && location) {
       res.redirect(status, location)
     } else {
       const content = ReactDOMServer.renderToString(<App store={store} />)

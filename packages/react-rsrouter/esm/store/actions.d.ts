@@ -12,14 +12,14 @@ export declare const setMatch: (payload: Match) => {
 export declare const notFound: () => {
     type: "@rs_router/NOT_FOUND";
 };
-declare type redicrectPayload = {
+declare type redirectPayload = {
     location: string;
     replace: boolean;
 };
-export declare const redirect: (payload: redicrectPayload) => {
+export declare const redirect: (payload: redirectPayload) => {
     type: string;
 } & {
-    payload: redicrectPayload;
+    payload: redirectPayload;
 };
 export declare const setServerResponse: (payload: ServerResponse) => {
     type: string;
