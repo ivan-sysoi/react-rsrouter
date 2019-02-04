@@ -53,7 +53,7 @@ export function createRouterSaga({ routes, serverLocation, store, }) {
             else if (redirectAction) {
                 yield put(setServerResponse(redirectAction.payload));
             }
-            else if (routes.isFallbackMatch(match.path)) {
+            else if (routes.isFallbackPath(match.path)) {
                 yield put(setServerResponse({ status: 404 }));
             }
             else {

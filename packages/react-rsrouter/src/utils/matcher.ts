@@ -17,6 +17,7 @@ export function matchLocation(route: RouteSchema, location: RouterLocation, cont
       const routeExpectsExactMatch = route.path.endsWith('$')
       const routePath = routeExpectsExactMatch ? route.path.slice(0, -1) : route.path
 
+      // [routePath=/path$] === "/path"
       if (routeExpectsExactMatch && routePath === location.pathname) {
         return {
           nextLocation: null,
@@ -25,7 +26,13 @@ export function matchLocation(route: RouteSchema, location: RouterLocation, cont
       if (location.pathname.startsWith(routePath)) {
         const hasNested = Array.isArray(route.nested) && route.nested.length > 0
 
-        if (!routeExpectsExactMatch || hasNested) {
+        // case 1: [routePath=/path$]/nested-path
+        const case1 = routeExpectsExactMatch && hasNested && location.pathname[routePath.length] === '/'
+
+        // case 2: [routePath=/path]-some/other-path
+        const case2 = !routeExpectsExactMatch && hasNested
+
+        if (case1 || case2) {
           return {
             nextLocation: {
               ...location,

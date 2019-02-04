@@ -29,7 +29,7 @@ export interface IRoutesCollection {
     traverse(location: RouterLocation, context: MatcherContext): Match | null;
     getMatch(location: RouterLocation, getState: stateGetter): Match;
     getFallbackMatch(path?: RoutePath): Match;
-    isFallbackMatch(path: RoutePath): boolean;
+    isFallbackPath(path: RoutePath): boolean;
     buildUrl(path: RoutePath, params: RouteParams, getState: stateGetter): string;
 }
 export declare type ParentRoutesCollection = {
@@ -45,8 +45,8 @@ export declare class RoutesCollection implements IRoutesCollection {
     traverse(location: RouterLocation, context: MatcherContext): Match | null;
     getMatch(location: RouterLocation, getState: stateGetter): Match;
     getRoutes(path: RoutePath): IterableIterator<RouteSchema>;
+    private getRouteFullPath;
     getFallbackMatch(path?: RoutePath): Match;
-    isFallbackMatch(path: RoutePath): boolean;
-    getRoutePath(routeId: string): RoutePath;
+    isFallbackPath(path: RoutePath): boolean;
     buildUrl(path: RoutePath, params: RouteParams, getState: stateGetter): string;
 }

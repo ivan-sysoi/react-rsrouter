@@ -82,7 +82,7 @@ export class RoutesCollection {
             else if (Array.isArray(route.nested) && route.nested.length > 0) {
                 this.nested.set(route.id, new RoutesCollection(route.nested, { parentRouteId: route.id, collection: this }));
             }
-            if (process.env.NODE_ENV === 'development') {
+            if (process.env.NODE_ENV !== 'production') {
                 validateRouteSchema(route);
             }
             this.routes.set(route.id, Object.freeze(route));
@@ -143,44 +143,7 @@ export class RoutesCollection {
             },
         };
     }
-    getFallbackMatch(path) {
-        if (Array.isArray(path) && path.length > 0) {
-            const nestCollection = [];
-            let ind = 0;
-            let collection = this;
-            do {
-                collection = collection.nested.get(path[ind]);
-                if (collection) {
-                    nestCollection.push(collection);
-                }
-                ind += 1;
-            } while (collection);
-            const fallbackPath = [];
-            for (let ind = nestCollection.length - 1; ind >= 0; ind -= 1) {
-                if (fallbackPath.length === 0 && nestCollection[ind].fallbackId !== null) {
-                    fallbackPath.push(nestCollection[ind].fallbackId);
-                }
-            }
-            nestCollection.reverse();
-            for (collection of nestCollection) {
-                if (collection.fallbackId !== null) {
-                    return {
-                        path: collection.getRoutePath(collection.fallbackId),
-                        params: {},
-                    };
-                }
-            }
-        }
-        if (this.fallbackId === null) {
-            throw new Error('You must speciy at least one fallback route');
-        }
-        return { path: [this.fallbackId], params: {} };
-    }
-    isFallbackMatch(path) {
-        const routes = Array.from(this.getRoutes(path));
-        return routes[routes.length - 1].type === 'fallback';
-    }
-    getRoutePath(routeId) {
+    getRouteFullPath(routeId) {
         let parent = this.parent;
         const path = [routeId];
         while (parent) {
@@ -189,6 +152,41 @@ export class RoutesCollection {
         }
         path.reverse();
         return path;
+    }
+    getFallbackMatch(path) {
+        if (Array.isArray(path) && path.length > 1 && this.nested.has(path[0])) {
+            // go into deep to find the most nest collection
+            let nestedCollection = this.nested.get(path[0]);
+            for (let ind = 1; ind < path.length - 1; ind += 1) {
+                if (!nestedCollection.nested.has(path[ind])) {
+                    break;
+                }
+                nestedCollection = nestedCollection.nested.get(path[ind]);
+            }
+            // go upper, return the first fallback route
+            while (nestedCollection) {
+                if (nestedCollection.fallbackId !== null) {
+                    return {
+                        path: nestedCollection.getRouteFullPath(nestedCollection.fallbackId),
+                        params: {},
+                    };
+                }
+                if (nestedCollection.parent) {
+                    nestedCollection = nestedCollection.parent.collection;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        if (this.fallbackId === null) {
+            throw new Error('You must specify at least one fallback route');
+        }
+        return { path: [this.fallbackId], params: {} };
+    }
+    isFallbackPath(path) {
+        const routes = Array.from(this.getRoutes(path));
+        return routes[routes.length - 1].type === 'fallback';
     }
     buildUrl(path, params, getState) {
         let url = '';
