@@ -40,6 +40,9 @@ const route: DynamicRouteSchema = {
       let rubric
       if (pathMatch.groups.slug) {
         rubric = selectRubricBySlug(getState() as RootState, pathMatch.groups.slug)
+        if (!rubric) {
+          return null // not matched
+        }
       }
 
       let nextLocation = { ...location, pathname: '' }
