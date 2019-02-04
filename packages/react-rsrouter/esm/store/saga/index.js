@@ -64,7 +64,7 @@ export function createRouterSaga({ routes, serverLocation, store, }) {
         const currentMatch = yield select(selectMatch);
         if (currentMatch.path.length === 0) {
             const match = routes.getMatch(startLocation, store.getState);
-            store.dispatch(goTo(match));
+            yield put(goTo(match));
         }
     };
 }
