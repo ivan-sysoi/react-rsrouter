@@ -4,6 +4,7 @@ import { Match } from '../../.';
 export declare type applyMatchSaga = ({ match }: {
     match: Match;
 }) => SagaIterator;
-export declare const createApplyMatch: ({ routes }: {
+export declare const createApplyMatch: ({ routes, ssr }: {
+    ssr: boolean;
     routes: IRoutesCollection;
 }) => applyMatchSaga;

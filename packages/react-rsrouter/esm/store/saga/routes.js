@@ -1,6 +1,6 @@
-import { fork, cancel, put } from 'redux-saga/effects';
+import { fork, call, cancel, put } from 'redux-saga/effects';
 import { setMatch } from '../actions';
-export const createApplyMatch = ({ routes }) => {
+export const createApplyMatch = ({ routes, ssr }) => {
     const runTasks = [];
     return function* applyMatch({ match }) {
         while (runTasks.length > 0) {
@@ -10,7 +10,12 @@ export const createApplyMatch = ({ routes }) => {
         for (const route of routes.getRoutes(match.path)) {
             if ('onEnter' in route) {
                 const onEnter = route.onEnter;
-                runTasks.push(yield fork(onEnter, { ssr: false }));
+                if (ssr) {
+                    yield call(onEnter, { ssr });
+                }
+                else {
+                    runTasks.push(yield fork(onEnter, { ssr }));
+                }
             }
         }
     };

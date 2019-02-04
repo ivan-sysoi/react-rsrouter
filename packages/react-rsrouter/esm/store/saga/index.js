@@ -22,7 +22,7 @@ function* handleRedirect({ routes, applyMatch, getState }, action) {
 }
 export function createRouterSaga({ routes, serverLocation, store, }) {
     const ssr = Boolean(serverLocation);
-    const applyMatch = createApplyMatch({ routes });
+    const applyMatch = createApplyMatch({ routes, ssr });
     if (history) {
         history.listen(location => {
             const match = routes.getMatch(location, store.getState);

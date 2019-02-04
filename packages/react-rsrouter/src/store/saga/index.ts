@@ -46,7 +46,7 @@ export function createRouterSaga({
   store: RootStore,
 }) {
   const ssr = Boolean(serverLocation)
-  const applyMatch = createApplyMatch({ routes })
+  const applyMatch = createApplyMatch({ routes, ssr })
 
   if (history) {
     history.listen(location => {
