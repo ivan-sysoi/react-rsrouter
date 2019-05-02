@@ -1,7 +1,7 @@
 import { StateType } from 'typesafe-actions'
 import { applyMiddleware, compose, createStore, combineReducers, Store } from 'redux'
 import * as reduxSaga from 'redux-saga'
-import { reducer as routerReducer, RootState as RouterState } from 'react-rsrouter'
+import { reducer as routerReducer, RootState as RouterState, RouterLocation } from 'react-rsrouter'
 
 import createSaga from './saga'
 import { reducer as rubricsReducer } from './rubrics'
@@ -23,7 +23,7 @@ export type RootState = StateType<typeof reducer> & RouterState
 export type RootStore = Store<RootState>
 
 
-export async function configureStore(initialState?: RootState, serverLocation?: Location): Promise<RootStore> {
+export async function configureStore(initialState?: RootState, serverLocation?: RouterLocation): Promise<RootStore> {
   const sagaMiddleware = reduxSaga.default()
 
   const enhancers = [applyMiddleware(sagaMiddleware)]

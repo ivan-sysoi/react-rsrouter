@@ -4,16 +4,18 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
-      "react-rsrouter": ["../../../packages/react-rsrouter/"]
+      "react-rsrouter": ["../../../"]
     },
     "rootDir": "src",
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
+    "removeComments": true,
+    "pretty": true,
     "outDir": "./esm/",
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "es2015",
+    "module": "ESNext",
     "target": "ESNext",
     "jsx": "react"
   },

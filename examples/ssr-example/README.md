@@ -23,3 +23,5 @@ Example has the following routes structure:
 npm i
 npm start
 ```
+
+Example is availabe on http://localhost:4000/.

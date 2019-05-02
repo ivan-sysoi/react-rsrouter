@@ -10,9 +10,12 @@ const chalk = require('chalk')
 
 const app = express();
 
-const WEBPACK_PORT =
-  process.env.WEBPACK_PORT ||
-  (!isNaN(Number(process.env.PORT)) ? Number(process.env.PORT) + 1 : 8501);
+const getPortNum = (val, defPort = 3000) => !Number.isNaN(Number(val)) ? Number(val) : defPort
+const prependSlash = str => str.startsWith('/') ? str : `/${str}`;
+const appendSlash = str => str.endsWith('/') ? str : `${str}/`;
+const cutLastSlash = str => str.endsWith('/') ? str.slice(0, -1) : str;
+
+const WEBPACK_PORT = getPortNum(process.env.WEBPACK_PORT, getPortNum(process.env.PORT) + 1);
 
 const logMessage = (message, level = 'info') => {
   const color = level === 'error' ? 'red' : level === 'warning' ? 'yellow' : 'white';
@@ -44,18 +47,13 @@ const start = async () => {
     ...clientConfig.entry.bundle,
   ];
 
-  clientConfig.output.hotUpdateMainFilename = 'updates/[hash].hot-update.json';
-  clientConfig.output.hotUpdateChunkFilename = 'updates/[id].[hash].hot-update.js';
+  //clientConfig.output.hotUpdateMainFilename = 'updates/[hash].hot-update.json';
+  //clientConfig.output.hotUpdateChunkFilename = 'updates/[id].[hash].hot-update.js';
 
   const publicPath = clientConfig.output.publicPath;
 
-  clientConfig.output.publicPath = [`http://localhost:${WEBPACK_PORT}`, publicPath]
-    .join('/')
-    .replace(/([^:+])\/+/g, '$1/');
-
-  serverConfig.output.publicPath = [`http://localhost:${WEBPACK_PORT}`, publicPath]
-    .join('/')
-    .replace(/([^:+])\/+/g, '$1/');
+  clientConfig.output.publicPath = `http://localhost:${WEBPACK_PORT}${appendSlash(prependSlash(publicPath))}`;
+  serverConfig.output.publicPath = clientConfig.output.publicPath;
 
   const multiCompiler = webpack([clientConfig, serverConfig]);
 
@@ -75,10 +73,9 @@ const start = async () => {
     res.header('Access-Control-Allow-Origin', '*');
     return next();
   });
-
   app.use(
     webpackDevMiddleware(clientCompiler, {
-      publicPath: clientConfig.output.publicPath,
+      publicPath: cutLastSlash(prependSlash(publicPath)),
       stats: clientConfig.stats,
       watchOptions,
     })
@@ -86,9 +83,9 @@ const start = async () => {
 
   app.use(webpackHotMiddleware(clientCompiler));
 
-  app.use('/static', express.static(distPath));
+  app.use(cutLastSlash(prependSlash(publicPath)), express.static(distPath));
 
-  app.listen(WEBPACK_PORT);
+  app.listen(WEBPACK_PORT, 'localhost');
 
   serverCompiler.watch(watchOptions, (error, stats) => {
     if (!error && !stats.hasErrors()) {

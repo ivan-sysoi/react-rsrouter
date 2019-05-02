@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const ManifestPlugin = require('webpack-manifest-plugin')
 
 const loaders = [
   {
@@ -19,7 +20,7 @@ const resolve = {
   mainFields: ['browser', 'module', 'main'],
   modules: [path.resolve(__dirname, 'src'), 'node_modules'],
   alias: {
-    'react-rsrouter$': path.resolve(__dirname, '../../packages/react-rsrouter'),
+    'react-rsrouter$': path.resolve(__dirname, '../..'),
 
     // webpack issue: https://github.com/webpack/webpack/issues/2134
     react: path.resolve(__dirname, 'node_modules/react'),
@@ -48,12 +49,13 @@ module.exports = [
       publicPath: 'static/',
       path: path.resolve(__dirname, 'dist'),
     },
-    plugins: [new webpack.HotModuleReplacementPlugin()],
-    optimization: {
-      splitChunks: {
-        chunks: 'all',
-      },
-    },
+    plugins: [
+      new ManifestPlugin({ fileName: path.resolve(__dirname, 'dist', 'manifest.json'), writeToFileEmit: true }),
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.DefinePlugin({
+        isBrowser: true,
+      }),
+    ],
   },
   {
     name: 'server',
@@ -63,6 +65,12 @@ module.exports = [
     module: {
       rules: loaders,
     },
+    plugins: [
+      new webpack.DefinePlugin({
+        isBrowser: false,
+        PORT: process.env.PORT,
+      }),
+    ],
     resolve,
     output: {
       filename: 'server.js',

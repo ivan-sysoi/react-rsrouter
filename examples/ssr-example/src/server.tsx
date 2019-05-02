@@ -1,15 +1,20 @@
 import * as React from 'react'
+import * as path from 'path'
 import * as ReactDOMServer from 'react-dom/server'
 import * as express from 'express'
+import { getServerResponse, RouterLocation } from 'react-rsrouter'
 
-import { selectServerResponse } from 'react-rsrouter'
-
-import App from './client/App'
-import { configureStore, RootState } from './store'
+import App from 'client/App'
+import { configureStore, RootState, RootStore } from 'store'
 
 const app = express()
 
-const appTemplate = (state: RootState, content: string) => {
+// tslint:disable-next-line
+const expressManifestHelpers = require('express-manifest-helpers').default
+
+app.use(expressManifestHelpers({ manifestPath: path.resolve(process.cwd(), 'dist', 'manifest.json') }))
+
+const appTemplate = (res: { locals: { assetPath: (url: string) => string} }, state: RootState, content: string) => {
   return `
 <!DOCTYPE html>
 <html>
@@ -64,24 +69,24 @@ const appTemplate = (state: RootState, content: string) => {
       flex: 1;
     }
   </style>
-  <script src="http://localhost:${process.env.WEBPACK_PORT}/static/vendors~bundle.client.js"></script>
-  <script src="http://localhost:${process.env.WEBPACK_PORT}/static/client.js"></script>
+  <script src="${res.locals.assetPath('bundle.js')}"></script>
 </body>
 `
 }
 
 app.use((req, res, next) => {
-  configureStore(undefined, { pathname: req.path, search: '' } as Location).then(store => {
-    const state: RootState = store.getState()
-    const { status, location } = selectServerResponse(state)
+  configureStore(undefined, { pathname: req.path, search: '' } as RouterLocation)
+    .then((store: RootStore) => {
+      const state: RootState = store.getState()
+      const { status, location } = getServerResponse(state)
 
-    if ((status === 301 || status === 302)  && location) {
-      res.redirect(status, location)
-    } else {
-      const content = ReactDOMServer.renderToString(<App store={store} />)
-      res.status(status).send(appTemplate(state, content))
-    }
-  }, next)
+      if ((status === 301 || status === 302)  && location) {
+        res.redirect(status, location)
+      } else {
+        const content = ReactDOMServer.renderToString(<App store={store} />)
+        res.status(status).send(appTemplate(res, state, content))
+      }
+    }, next)
 })
 
 app.listen(process.env.PORT, (error: Error) => {
