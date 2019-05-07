@@ -106,6 +106,9 @@ export default function createRouterSaga({ routes, serverLocation, store }) {
             const match = routes.getMatch(startLocation, store.getState);
             yield put(goTo({ path: match.path, params: match.params }));
         }
+        else {
+            yield call(applyMatch, { match: currentMatch });
+        }
     };
 }
 //# sourceMappingURL=index.js.map

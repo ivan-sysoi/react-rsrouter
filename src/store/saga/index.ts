@@ -138,6 +138,8 @@ export default function createRouterSaga(
     if (currentMatch.path.length === 0) {
       const match = routes.getMatch(startLocation, store.getState)
       yield put(goTo({ path: match.path, params: match.params }))
+    } else {
+      yield call(applyMatch, { match: currentMatch })
     }
   }
 }

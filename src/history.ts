@@ -1,5 +1,4 @@
 import { createBrowserHistory, History } from 'history'
-import { RouterLocation } from './'
 
 export interface RouterHistory extends History {
   back: () => void
